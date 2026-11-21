@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { Utensils, AlertOctagon, RotateCcw, Loader2, Sparkles } from "lucide-react";
+import { getApiUrl } from "@/lib/api";
 
 interface DemoPanelProps {
   selectedNode: string;
@@ -19,7 +20,8 @@ export const DemoPanel: React.FC<DemoPanelProps> = ({
     try {
       setLoading(kind);
       setFeedback(null);
-      const res = await fetch("/api/demo/stimulus", {
+      const url = getApiUrl("/api/demo/stimulus");
+      const res = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ node: selectedNode, kind }),

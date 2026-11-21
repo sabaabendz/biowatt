@@ -5,6 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { getSocket } from "@/lib/socket";
 import { EventData } from "@/types";
 import { formatDateTime } from "@/lib/utils";
+import { getApiUrl } from "@/lib/api";
 import {
   AlertTriangle,
   AlertOctagon,
@@ -21,7 +22,7 @@ export default function EventsPage() {
   const [filterNode, setFilterNode] = useState<string>("ALL");
 
   useEffect(() => {
-    fetch("/api/events?limit=100")
+    fetch(getApiUrl("/api/events?limit=100"))
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data)) setEvents(data);

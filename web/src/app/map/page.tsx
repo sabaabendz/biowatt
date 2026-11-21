@@ -5,6 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { TwinBadge } from "@/components/TwinBadge";
 import { getSocket } from "@/lib/socket";
 import { NodeInfo, TelemetryData, InsightData } from "@/types";
+import { getApiUrl } from "@/lib/api";
 import {
   MapPin,
   Waves,
@@ -72,7 +73,7 @@ export default function GulfMapPage() {
   const [latestInsights, setLatestInsights] = useState<Record<string, InsightData>>({});
 
   useEffect(() => {
-    fetch("/api/nodes")
+    fetch(getApiUrl("/api/nodes"))
       .then((res) => res.json())
       .then((data) => {
         if (Array.isArray(data) && data.length > 0) setNodes(data);

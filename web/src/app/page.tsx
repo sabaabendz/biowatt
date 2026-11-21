@@ -9,6 +9,7 @@ import { DemoPanel } from "@/components/DemoPanel";
 import { EventFeed } from "@/components/EventFeed";
 import { getSocket } from "@/lib/socket";
 import { NodeInfo, TelemetryData, InsightData, EventData } from "@/types";
+import { getApiUrl } from "@/lib/api";
 import {
   Zap,
   BatteryCharging,
@@ -84,8 +85,8 @@ export default function DashboardPage() {
     const fetchInitialData = async () => {
       try {
         const [nodesRes, eventsRes] = await Promise.all([
-          fetch("/api/nodes"),
-          fetch("/api/events?limit=30"),
+          fetch(getApiUrl("/api/nodes")),
+          fetch(getApiUrl("/api/events?limit=30")),
         ]);
         if (nodesRes.ok) {
           const nData = await nodesRes.json();
@@ -294,7 +295,7 @@ export default function DashboardPage() {
             </div>
             <button
               onClick={async () => {
-                await fetch("/api/demo/stimulus", {
+                await fetch(getApiUrl("/api/demo/stimulus"), {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
                   body: JSON.stringify({ node: selectedNodeId, kind: "reset" }),
