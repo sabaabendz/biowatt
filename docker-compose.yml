@@ -1,0 +1,72 @@
+version: '3.8'
+
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    container_name: biowatt-mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosquitto-data:/mosquitto/data
+      - mosquitto-log:/mosquitto/log
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: biowatt-api
+    restart: unless-stopped
+    ports:
+      - "4000:4000"
+    environment:
+      - PORT=4000
+      - MQTT_BROKER_URL=mqtt://mosquitto:1883
+      - DB_PATH=/data/biowatt.db
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN:-}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID:-}
+      - TWIN=${TWIN:-0}
+    volumes:
+      - api-data:/data
+    depends_on:
+      - mosquitto
+
+  ai:
+    build:
+      context: ./ai
+      dockerfile: Dockerfile
+    container_name: biowatt-ai
+    restart: unless-stopped
+    environment:
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=1883
+      - TWIN=${TWIN:-0}
+      - BOD_SLOPE=0.9
+      - BOD_INTERCEPT=20.0
+      - K_SWIM=0.09
+    depends_on:
+      - mosquitto
+      - api
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    container_name: biowatt-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - NEXT_PUBLIC_SOCKET_URL=http://localhost:4000
+      - API_INTERNAL_URL=http://api:4000
+    depends_on:
+      - api
+
+volumes:
+  mosquitto-data:
+  mosquitto-log:
+  api-data:
+

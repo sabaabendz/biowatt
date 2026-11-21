@@ -1,0 +1,20 @@
+{
+  "name": "biowatt-api",
+  "version": "1.0.0",
+  "description": "BioWatt Sentinel - Node.js Express & Rules Engine with SQLite, MQTT, Socket.IO",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "mqtt": "^5.10.4",
+    "socket.io": "^4.8.1"
+  },
+  "optionalDependencies": {
+    "better-sqlite3": "^11.8.1"
+  }
+}
